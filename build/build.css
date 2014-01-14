@@ -1,0 +1,44 @@
+.tree-branch {
+  position: relative;
+  line-height: 1.5;
+  font-size: 18px;
+}
+.tree-text {
+  cursor: pointer;
+  padding-left: 20px;
+}
+.tree-text::before{
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  font-size: 1em;
+  content: '▾';
+}
+.tree-branch > ul {
+  margin: 0px;
+  padding: 0px;
+}
+.tree-list {
+  min-height: 5px;
+}
+.tree-list > li {
+  list-style: none;
+  padding-left: 20px;
+}
+.tree-leaf {
+  cursor: pointer;
+}
+.tree-collapse > ul {
+  display: none;
+}
+.tree-collapse .tree-text::before {
+  content: '▸';
+}
+.tree-branch {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}

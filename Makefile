@@ -1,4 +1,3 @@
-
 build: components index.js tree.css template.js
 	@component build --dev
 
