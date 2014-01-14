@@ -2,7 +2,7 @@
 
   Lightweight tree component, with dynamic node, event and D&D support.
 
-  [demo](https://chemzqm.github.com/tree/)
+  [demo](https://chemzqm.github.io/tree/)
 
 ## Installation
 
