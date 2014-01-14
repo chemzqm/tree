@@ -1,0 +1,1 @@
+module.exports = '<div class="tree-branch" data-id="{{id}}">\n  <div class="tree-text">{{!text}}</div>\n  <ul class="tree-list">\n  </ul>\n</div>\n';

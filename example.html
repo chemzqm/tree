@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>tabs</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../build/build.css">
+    <style>
+      *, *:before, *:after {
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+      }
+      #tree {
+        width: 300px;
+        padding: 15px;
+        background-color: #F7F5FA;
+        border-radius: 5px;
+        color: #716B7A;
+        font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+      }
+      .tree-leaf:hover{
+        background-color: #E5E3E9;
+      }
+      .tree-leaf.active {
+        font-weight: bold;
+        color: #563D7C;
+      }
+      #tree 
+    </style>
+  </head>
+  <body>
+    <button id="show">
+      show 7
+    </button>
+    <button id="remove">
+      remove other
+    </button>
+    <button id="parents">
+      parents of 7
+    </button>
+    <div id="tree">
+    </div>
+    <script src="../build/build.js"></script>
+    <script>
+      var Tree = require('tree');
+      var dom = require('dom');
+      var parent = document.getElementById('tree');
+      var tree = new Tree(parent);
+      tree.branch('title', {parent: parent, id: 'first'});
+      tree.leaf('1', {
+        id: 1
+      });
+      tree.leaf('2', {
+        id: 2
+      });
+      tree.leaf('3', {
+        id: 3
+      });
+      tree.branch('other title', {parent: parent, id: 'other'});
+      tree.leaf('4');
+      tree.leaf('5');
+      tree.leaf('6');
+      tree.branch('sub title', {parent: tree.find('first'), id: 'sub'});
+      tree.leaf('7', {
+        id: 7
+      });
+      tree.leaf('8');
+      tree.leaf('9');
+      tree.on('active', function(node, id) {
+        console.log(node);
+        console.log(id);
+      })
+      tree.on('update', function(){
+        console.log('update');
+      })
+      tree.draggable();
+      tree.collapse('first');
+      tree.collapse('sub');
+      document.getElementById('show').addEventListener('click', function() {
+        tree.show('7');
+      });
+      document.getElementById('remove').addEventListener('click', function(){
+        tree.remove('other');
+      })
+      document.getElementById('parents').addEventListener('click', function(){
+        var nodes = tree.parents('7');
+        var ids = dom(nodes).map(function(n){
+          return this.attr('data-id');
+        });
+        console.log(ids);
+      })
+    </script>
+  </body>
+</html>
