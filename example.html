@@ -29,6 +29,7 @@
     </style>
   </head>
   <body>
+
     <button id="show">
       show 7
     </button>
@@ -37,6 +38,9 @@
     </button>
     <button id="parents">
       parents of 7
+    </button>
+    <button id="destroy">
+      destroy
     </button>
     <div id="tree">
     </div>
@@ -88,6 +92,9 @@
           return this.attr('data-id');
         });
         console.log(ids);
+      })
+      document.getElementById('destroy').addEventListener('click', function(){
+        tree.remove();
       })
     </script>
   </body>
