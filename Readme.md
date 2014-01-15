@@ -14,6 +14,7 @@
 
 * `update` emitted after D&D event.
 * `active` emitted with `node` and `id` when a leaf node is clicked, class `active` is added to that node.
+* `remove` emitted with `node` and `id` when a node is removed from the tree.
 
 ## API
 
