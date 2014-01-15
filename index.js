@@ -145,13 +145,16 @@ Tree.prototype.show = function(el) {
  * @api public
  */
 Tree.prototype.remove = function(el) {
-  if (!el) {
+  if (arguments.length === 0) {
     this.events.unbind();
     this.el.innerHTML = '';
     if (this.movearound) this.movearound.remove();
+    return;
   }
   if (typeof el === 'string') el = this.find(el);
   el.parentNode.removeChild(el);
+  var id = el.getAttribute('data-id');
+  this.emit('remove', el, id);
   return this;
 }
 
