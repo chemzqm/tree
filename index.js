@@ -213,7 +213,8 @@ Tree.prototype.toJSON = function() {
   var list = query('.tree-list', this.root).childNodes;
   if (list) {
     for (var i = 0; i < list.length; i++) {
-      res.push(toObject(list[i]));
+      var node = list[i];
+      node.nodeType === 1 && res.push(toObject(node));
     }
   }
   return JSON.stringify(res);
