@@ -42,6 +42,9 @@
     <button id="destroy">
       destroy
     </button>
+    <button id="json">
+      toJSOn
+    </button>
     <div id="tree">
     </div>
 
@@ -109,8 +112,10 @@
       $('destroy').addEventListener('click', function(){
         tree.remove();
       })
-      var str = tree.toJSON();
-      console.log(str);
+      $('json').addEventListener('click', function(){
+        var str = tree.toJSON();
+        console.log(str);
+      })
     </script>
   </body>
 </html>
