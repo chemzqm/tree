@@ -26,17 +26,17 @@ Init tree with parent node.
 
 Config the tree with object.
 
+### .draggable()
+
+Make the leaves draggable.
+
+### .parents(id | el)
+
+et branch node list by id or node reference.
+
 ### .toJSON()
 
 Get the json format.
-
-### .branch(text, [config])
-
-Add a branch node with `text` and optional config (id is used for `data-id` attribute and parent is refenence of parent node).
-
-### .leaf(text, [config])
-
-Add a leaf node with text and optional config object.
 
 ### .find(id)
 
@@ -50,17 +50,9 @@ Make the node visible by `data-id` or node refenence.
 
 Remove the node by `data-id` or node refenence.
 
-### .draggable()
-
-Make the leaves draggable.
-
 ### .collapse(id | el)
 
 Collapse the branch node by id or node reference.
-
-### .parents(id | el)
-
-Get branch node list by id or node reference.
 
 ## License
 
