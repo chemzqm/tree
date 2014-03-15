@@ -242,30 +242,6 @@ exports.unbind = function(el, type, fn, capture){\n\
 };\n\
 //@ sourceURL=component-event/index.js"
 ));
-require.register("component-query/index.js", Function("exports, require, module",
-"function one(selector, el) {\n\
-  return el.querySelector(selector);\n\
-}\n\
-\n\
-exports = module.exports = function(selector, el){\n\
-  el = el || document;\n\
-  return one(selector, el);\n\
-};\n\
-\n\
-exports.all = function(selector, el){\n\
-  el = el || document;\n\
-  return el.querySelectorAll(selector);\n\
-};\n\
-\n\
-exports.engine = function(obj){\n\
-  if (!obj.one) throw new Error('.one callback required');\n\
-  if (!obj.all) throw new Error('.all callback required');\n\
-  one = obj.one;\n\
-  exports.all = obj.all;\n\
-  return exports;\n\
-};\n\
-//@ sourceURL=component-query/index.js"
-));
 require.register("component-matches-selector/index.js", Function("exports, require, module",
 "/**\n\
  * Module dependencies.\n\
@@ -736,6 +712,30 @@ ClassList.prototype.contains = function(name){\n\
 };\n\
 //@ sourceURL=component-classes/index.js"
 ));
+require.register("component-query/index.js", Function("exports, require, module",
+"function one(selector, el) {\n\
+  return el.querySelector(selector);\n\
+}\n\
+\n\
+exports = module.exports = function(selector, el){\n\
+  el = el || document;\n\
+  return one(selector, el);\n\
+};\n\
+\n\
+exports.all = function(selector, el){\n\
+  el = el || document;\n\
+  return el.querySelectorAll(selector);\n\
+};\n\
+\n\
+exports.engine = function(obj){\n\
+  if (!obj.one) throw new Error('.one callback required');\n\
+  if (!obj.all) throw new Error('.all callback required');\n\
+  one = obj.one;\n\
+  exports.all = obj.all;\n\
+  return exports;\n\
+};\n\
+//@ sourceURL=component-query/index.js"
+));
 require.register("component-domify/index.js", Function("exports, require, module",
 "\n\
 /**\n\
@@ -991,165 +991,6 @@ Emitter.prototype.hasListeners = function(event){\n\
   return !! this.listeners(event).length;\n\
 };\n\
 //@ sourceURL=component-emitter/index.js"
-));
-require.register("visionmedia-minstache/index.js", Function("exports, require, module",
-"\n\
-/**\n\
- * Expose `render()`.`\n\
- */\n\
-\n\
-exports = module.exports = render;\n\
-\n\
-/**\n\
- * Expose `compile()`.\n\
- */\n\
-\n\
-exports.compile = compile;\n\
-\n\
-/**\n\
- * Render the given mustache `str` with `obj`.\n\
- *\n\
- * @param {String} str\n\
- * @param {Object} obj\n\
- * @return {String}\n\
- * @api public\n\
- */\n\
-\n\
-function render(str, obj) {\n\
-  obj = obj || {};\n\
-  var fn = compile(str);\n\
-  return fn(obj);\n\
-}\n\
-\n\
-/**\n\
- * Compile the given `str` to a `Function`.\n\
- *\n\
- * @param {String} str\n\
- * @return {Function}\n\
- * @api public\n\
- */\n\
-\n\
-function compile(str) {\n\
-  var js = [];\n\
-  var toks = parse(str);\n\
-  var tok;\n\
-\n\
-  for (var i = 0; i < toks.length; ++i) {\n\
-    tok = toks[i];\n\
-    if (i % 2 == 0) {\n\
-      js.push('\"' + tok.replace(/\"/g, '\\\\\"') + '\"');\n\
-    } else {\n\
-      switch (tok[0]) {\n\
-        case '/':\n\
-          tok = tok.slice(1);\n\
-          js.push(') + ');\n\
-          break;\n\
-        case '^':\n\
-          tok = tok.slice(1);\n\
-          assertProperty(tok);\n\
-          js.push(' + section(obj, \"' + tok + '\", true, ');\n\
-          break;\n\
-        case '#':\n\
-          tok = tok.slice(1);\n\
-          assertProperty(tok);\n\
-          js.push(' + section(obj, \"' + tok + '\", false, ');\n\
-          break;\n\
-        case '!':\n\
-          tok = tok.slice(1);\n\
-          assertProperty(tok);\n\
-          js.push(' + obj.' + tok + ' + ');\n\
-          break;\n\
-        default:\n\
-          assertProperty(tok);\n\
-          js.push(' + escape(obj.' + tok + ') + ');\n\
-      }\n\
-    }\n\
-  }\n\
-\n\
-  js = '\\n\
-'\n\
-    + indent(escape.toString()) + ';\\n\
-\\n\
-'\n\
-    + indent(section.toString()) + ';\\n\
-\\n\
-'\n\
-    + '  return ' + js.join('').replace(/\\n\
-/g, '\\\\n\
-');\n\
-\n\
-  return new Function('obj', js);\n\
-}\n\
-\n\
-/**\n\
- * Assert that `prop` is a valid property.\n\
- *\n\
- * @param {String} prop\n\
- * @api private\n\
- */\n\
-\n\
-function assertProperty(prop) {\n\
-  if (!prop.match(/^[\\w.]+$/)) throw new Error('invalid property \"' + prop + '\"');\n\
-}\n\
-\n\
-/**\n\
- * Parse `str`.\n\
- *\n\
- * @param {String} str\n\
- * @return {Array}\n\
- * @api private\n\
- */\n\
-\n\
-function parse(str) {\n\
-  return str.split(/\\{\\{|\\}\\}/);\n\
-}\n\
-\n\
-/**\n\
- * Indent `str`.\n\
- *\n\
- * @param {String} str\n\
- * @return {String}\n\
- * @api private\n\
- */\n\
-\n\
-function indent(str) {\n\
-  return str.replace(/^/gm, '  ');\n\
-}\n\
-\n\
-/**\n\
- * Section handler.\n\
- *\n\
- * @param {Object} context obj\n\
- * @param {String} prop\n\
- * @param {String} str\n\
- * @param {Boolean} negate\n\
- * @api private\n\
- */\n\
-\n\
-function section(obj, prop, negate, str) {\n\
-  var val = obj[prop];\n\
-  if ('function' == typeof val) return val.call(obj, str);\n\
-  if (negate) val = !val;\n\
-  if (val) return str;\n\
-  return '';\n\
-}\n\
-\n\
-/**\n\
- * Escape the given `html`.\n\
- *\n\
- * @param {String} html\n\
- * @return {String}\n\
- * @api private\n\
- */\n\
-\n\
-function escape(html) {\n\
-  return String(html)\n\
-    .replace(/&/g, '&amp;')\n\
-    .replace(/\"/g, '&quot;')\n\
-    .replace(/</g, '&lt;')\n\
-    .replace(/>/g, '&gt;');\n\
-}\n\
-//@ sourceURL=visionmedia-minstache/index.js"
 ));
 require.register("yields-indexof/index.js", Function("exports, require, module",
 "\n\
@@ -3900,8 +3741,9 @@ var events = require('events');\n\
 var classes = require('classes');\n\
 var movearound = require('movearound');\n\
 var Emitter = require('emitter');\n\
-var minstache = require ('minstache');\n\
 var tmpl = require('./template');\n\
+var query = require('query');\n\
+\n\
 \n\
 /**\n\
  * Init tree with parent node\n\
@@ -3912,26 +3754,70 @@ function Tree(parent) {\n\
   if (! this instanceof Tree) return new Tree(parent);\n\
   this.el = parent;\n\
   this.events = events(this.el, this);\n\
-  this.events.bind('click .tree-branch', 'onclick');\n\
-  this.compile = minstache.compile(tmpl);\n\
+  this.events.bind('click', 'onclick');\n\
+  var el = domify(tmpl);\n\
+  parent.appendChild(el);\n\
+  this.root = query('.tree', parent);\n\
+  this.leafNode = query('.tree-leaf', parent);\n\
+  this.branchNode = query('.tree-branch', parent);\n\
+  var list = query('.tree-list', this.root);\n\
+  clear(list);\n\
 }\n\
 \n\
 Emitter(Tree.prototype);\n\
 \n\
-function within(el, className, root) {\n\
-  while(el && el !== root) {\n\
-    if (classes(el).has(className)) return el;\n\
-    el = el.parentNode;\n\
+/**\n\
+ * Add leaf with text and config\n\
+ * @param {String} text\n\
+ * @param {Object} config\n\
+ * @api public\n\
+ */\n\
+Tree.prototype.leaf = function(text, o) {\n\
+  o = o || {};\n\
+  var parent = o.parent || this.last || this.root;\n\
+  if (typeof parent === 'string') {\n\
+    parent = this.find(parent);\n\
   }\n\
-  return null;\n\
+  var node = this.leafNode.cloneNode(true);\n\
+  for (var i in o) {\n\
+    i === 'parent' || node.setAttribute('data-' + i, o[i]);\n\
+  }\n\
+  node.innerHTML = text;\n\
+  var ul = query('.tree-list', parent);\n\
+  ul.appendChild(node);\n\
+  return this;\n\
 }\n\
+\n\
+/**\n\
+ * Add branch with text and config\n\
+ * @param {String} text\n\
+ * @param {Object} config\n\
+ * @api public\n\
+ */\n\
+Tree.prototype.branch = function(text, o) {\n\
+  o = o || {};\n\
+  var parent = o.parent || this.last || this.root;\n\
+  if (typeof parent === 'string') {\n\
+    parent = this.find(parent);\n\
+  }\n\
+  var node = this.branchNode.cloneNode(true);\n\
+  for (var i in o) {\n\
+    i === 'parent' || node.setAttribute('data-' + i, o[i]);\n\
+  }\n\
+  query('.tree-text', node).innerHTML = text;\n\
+  var ul = query('.tree-list', parent);\n\
+  ul.appendChild(node);\n\
+  this.last = node;\n\
+  return this;\n\
+}\n\
+\n\
 \n\
 Tree.prototype.parents = function (el) {\n\
   if (typeof el === 'string') {\n\
     el = this.find(el);\n\
   }\n\
   var res = [];\n\
-  while (el !== this.el) {\n\
+  while (el !== this.root) {\n\
     el = el.parentNode;\n\
     if (classes(el).has('tree-branch')) res.unshift(el);\n\
   }\n\
@@ -3944,22 +3830,21 @@ Tree.prototype.parents = function (el) {\n\
  */\n\
 Tree.prototype.onclick = function(e) {\n\
   var el = e.target;\n\
-  //leaf click\n\
   var node = within(el, 'tree-leaf', this.el);\n\
   if (node) {\n\
-    var active = this.el.querySelector('.tree-leaf.active');\n\
+    //active leaf\n\
+    var active = query('.active', this.el);\n\
     if (active) {\n\
       classes(active).remove('active');\n\
     }\n\
     var id = node.getAttribute('data-id');\n\
     classes(node).add('active');\n\
-    this.emit('active', node, id);\n\
-    return;\n\
-  }\n\
-  node = within(el, 'tree-branch', this.el);\n\
-  //node click\n\
-  if (node) {\n\
-    classes(node).toggle('tree-collapse');\n\
+    this.emit('active', node);\n\
+  } else {\n\
+    node = within(el, 'tree-text', this.el);\n\
+    if (node) {\n\
+      classes(node.parentNode).toggle('tree-collapse');\n\
+    }\n\
   }\n\
 }\n\
 \n\
@@ -3970,46 +3855,6 @@ Tree.prototype.collapse = function(el) {\n\
   classes(el).add('tree-collapse');\n\
   return this;\n\
 }\n\
-/**\n\
- * Add branch with text and config\n\
- * @param {String} text\n\
- * @param {Object} config\n\
- * @api public\n\
- */\n\
-Tree.prototype.branch = function(text, o) {\n\
-  o = o || {};\n\
-  var parent = o.parent || this.last;\n\
-  var html = this.compile({\n\
-    text: text,\n\
-    id: o.id || ''\n\
-  })\n\
-  var node = domify(html);\n\
-  var ul = parent.querySelector('.tree-list');\n\
-  if (!ul || ul.parentNode !== parent) {\n\
-    parent.appendChild(node);\n\
-  } else {\n\
-    var li = document.createElement('li');\n\
-    ul.appendChild(li);\n\
-    li.appendChild(node);\n\
-  }\n\
-  this.last = node;\n\
-  return this;\n\
-}\n\
-\n\
-/**\n\
- * Add leaf with text and config\n\
- * @param {String} text\n\
- * @param {Object} config\n\
- * @api public\n\
- */\n\
-Tree.prototype.leaf = function(text, o) {\n\
-  o = o || {};\n\
-  var parent = o.parent || this.last;\n\
-  var html = '<li class=\"tree-leaf\" data-id=\"' + (o.id||'') + '\">' + text + '</li>';\n\
-  var node = domify(html);\n\
-  parent.querySelector('ul').appendChild(node);\n\
-  return this;\n\
-}\n\
 \n\
 /**\n\
  * Get the node by identifier\n\
@@ -4017,21 +3862,20 @@ Tree.prototype.leaf = function(text, o) {\n\
  * @api public\n\
  */\n\
 Tree.prototype.find = function(id) {\n\
-  return this.el.querySelector('[data-id=\"' + id + '\"]');\n\
+  return query('[data-id=\"' + id + '\"]', this.el);\n\
 }\n\
 \n\
 /**\n\
- * Expend the element branch expand recursivly\n\
+ * Expend the element branch recursive\n\
  * @param {String} el\n\
  * @api public\n\
  */\n\
 Tree.prototype.show = function(el) {\n\
   if (typeof el === 'string') el = this.find(el);\n\
-  el = el.parentNode;\n\
-  var node = within(el, 'tree-branch', this.el);\n\
-  if (node) {\n\
-    classes(node).remove('tree-collapse');\n\
-    this.show(node);\n\
+  var parent = el.parentNode;\n\
+  if (parent !== this.root) {\n\
+    classes(parent).remove('tree-collapse');\n\
+    this.show(parent);\n\
   }\n\
   return this;\n\
 }\n\
@@ -4042,13 +3886,16 @@ Tree.prototype.show = function(el) {\n\
  * @api public\n\
  */\n\
 Tree.prototype.remove = function(el) {\n\
-  if (!el) {\n\
+  if (arguments.length === 0) {\n\
     this.events.unbind();\n\
-    this.el.innerHTML = '';\n\
-    if (this.movearound) this.movearound.remove();\n\
+    clear(this.el);\n\
+    this.movearound && this.movearound.remove();\n\
+    return;\n\
   }\n\
   if (typeof el === 'string') el = this.find(el);\n\
   el.parentNode.removeChild(el);\n\
+  var id = el.getAttribute('data-id');\n\
+  this.emit('remove', el);\n\
   return this;\n\
 }\n\
 \n\
@@ -4065,13 +3912,110 @@ Tree.prototype.draggable = function() {\n\
   return this;\n\
 }\n\
 \n\
+/**\n\
+ * build the tree with obj, optional configured with `text` and `children` attribute.\n\
+ *\n\
+ * @param {String} obj data source\n\
+ * @param {String} config [optional] config object\n\
+ * @api public\n\
+ */\n\
+Tree.prototype.data = function(obj, config) {\n\
+  config = config || {};\n\
+  var textAttr = config.text || 'text';\n\
+  var childrenAttr = config.children || 'children';\n\
+  obj.forEach(function (o) {\n\
+    var o = clone(o);\n\
+    o.parent = o.parent || this.root;\n\
+    var text = o[textAttr];\n\
+    var children = o[childrenAttr];\n\
+    delete o[textAttr];\n\
+    delete o[childrenAttr];\n\
+    if (children) {\n\
+      this.branch(text, o);\n\
+      children.forEach(function (child) {\n\
+        child.parent = this.last;\n\
+      }.bind(this))\n\
+      this.data(children, config);\n\
+    } else {\n\
+      this.leaf(text, o);\n\
+    }\n\
+  }.bind(this))\n\
+}\n\
+\n\
+/**\n\
+ * return the json string format of the tree\n\
+ * @api public\n\
+ */\n\
+Tree.prototype.toJSON = function() {\n\
+  var res = [];\n\
+  var list = query('.tree-list', this.root).childNodes;\n\
+  if (list) {\n\
+    for (var i = 0; i < list.length; i++) {\n\
+      var node = list[i];\n\
+      node.nodeType === 1 && res.push(toObject(node));\n\
+    }\n\
+  }\n\
+  return JSON.stringify(res);\n\
+}\n\
+\n\
 module.exports = Tree;\n\
+\n\
+function toObject(node) {\n\
+  var res = {};\n\
+  var attrs = node.attributes;\n\
+  for (var i = 0; i < attrs.length; i++) {\n\
+    var name = attrs[i].nodeName;\n\
+    if (/^data-/.test(name)) {\n\
+      res[name.replace(/^data-/, '')] = node.getAttribute(name);\n\
+    }\n\
+  }\n\
+  if (classes(node).has('tree-leaf')) {\n\
+    res.text = node.innerHTML;\n\
+  }\n\
+  else if (classes(node).has('tree-branch')){\n\
+    res.text = query('.tree-text', node).innerHTML;\n\
+    res.children = [];\n\
+    var list = query('.tree-list', node).childNodes;\n\
+    for (var i = 0; i < list.length; i++) {\n\
+      var node = list[i];\n\
+      node.nodeType === 1 && res.children.push(toObject(node));\n\
+    }\n\
+  }\n\
+  return res;\n\
+}\n\
+\n\
+function clone(o) {\n\
+  var res = {};\n\
+  for (var i in o) {\n\
+    res[i] = o[i];\n\
+  }\n\
+  return res;\n\
+}\n\
+\n\
+function clear(node) {\n\
+  while (node.firstChild) {\n\
+    node.removeChild(node.firstChild);\n\
+  }\n\
+}\n\
+function within(el, className, root) {\n\
+  while(el && el !== root) {\n\
+    if (classes(el).has(className)) return el;\n\
+    el = el.parentNode;\n\
+  }\n\
+  return null;\n\
+}\n\
+\n\
 //@ sourceURL=tree/index.js"
 ));
 require.register("tree/template.js", Function("exports, require, module",
-"module.exports = '<div class=\"tree-branch\" data-id=\"{{id}}\">\\n\
-  <div class=\"tree-text\">{{!text}}</div>\\n\
+"module.exports = '<div class=\"tree\">\\n\
   <ul class=\"tree-list\">\\n\
+    <li class=\"tree-leaf\"></li>\\n\
+    <li class=\"tree-branch\">\\n\
+      <div class=\"tree-text\"></div>\\n\
+      <ul class=\"tree-list\">\\n\
+      </ul>\\n\
+    </li>\\n\
   </ul>\\n\
 </div>\\n\
 ';//@ sourceURL=tree/template.js"
@@ -4123,14 +4067,14 @@ require.alias("component-classes/index.js", "tree/deps/classes/index.js");
 require.alias("component-classes/index.js", "classes/index.js");
 require.alias("component-indexof/index.js", "component-classes/deps/indexof/index.js");
 
+require.alias("component-query/index.js", "tree/deps/query/index.js");
+require.alias("component-query/index.js", "query/index.js");
+
 require.alias("component-domify/index.js", "tree/deps/domify/index.js");
 require.alias("component-domify/index.js", "domify/index.js");
 
 require.alias("component-emitter/index.js", "tree/deps/emitter/index.js");
 require.alias("component-emitter/index.js", "emitter/index.js");
-
-require.alias("visionmedia-minstache/index.js", "tree/deps/minstache/index.js");
-require.alias("visionmedia-minstache/index.js", "minstache/index.js");
 
 require.alias("chemzqm-movearound/index.js", "tree/deps/movearound/index.js");
 require.alias("chemzqm-movearound/index.js", "tree/deps/movearound/index.js");

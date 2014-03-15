@@ -3,7 +3,7 @@
   "repo": "chemzqm/tree",
   "description": "lightweight tree component",
   "version": "0.0.2",
-  "keywords": ['tree', 'drag', 'drop'],
+  "keywords": ["tree", "drag", "drop"],
   "dependencies": {
     "component/events": "*",
     "component/classes": "*",
