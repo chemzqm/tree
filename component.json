@@ -4,6 +4,7 @@
   "description": "lightweight tree component",
   "version": "0.0.2",
   "keywords": ["tree", "drag", "drop"],
+  "demo": "http://chemzqm.github.io/tree/",
   "dependencies": {
     "component/events": "*",
     "component/classes": "*",
