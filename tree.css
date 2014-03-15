@@ -5,7 +5,13 @@
 }
 .tree-text {
   cursor: pointer;
+}
+.tree-text,
+.tree-leaf {
   padding-left: 20px;
+}
+.tree-branch {
+  margin-left: 20px;
 }
 .tree-text::before{
   position: absolute;
@@ -14,16 +20,14 @@
   font-size: 1em;
   content: '▾';
 }
-.tree-branch > ul {
+ul.tree-list {
   margin: 0px;
   padding: 0px;
-}
-.tree-list {
+  /*useful for draggable*/
   min-height: 5px;
 }
 .tree-list > li {
   list-style: none;
-  padding-left: 20px;
 }
 .tree-leaf {
   cursor: pointer;

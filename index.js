@@ -3,8 +3,9 @@ var events = require('events');
 var classes = require('classes');
 var movearound = require('movearound');
 var Emitter = require('emitter');
-var minstache = require ('minstache');
 var tmpl = require('./template');
+var query = require('query');
+
 
 /**
  * Init tree with parent node
@@ -15,26 +16,64 @@ function Tree(parent) {
   if (! this instanceof Tree) return new Tree(parent);
   this.el = parent;
   this.events = events(this.el, this);
-  this.events.bind('click .tree-branch', 'onclick');
-  this.compile = minstache.compile(tmpl);
+  this.events.bind('click', 'onclick');
+  var el = domify(tmpl);
+  parent.appendChild(el);
+  this.root = query('.tree', parent);
+  this.leafNode = query('.tree-leaf', parent);
+  this.branchNode = query('.tree-branch', parent);
+  var list = query('.tree-list', this.root);
+  clear(list);
 }
 
 Emitter(Tree.prototype);
 
-function within(el, className, root) {
-  while(el && el !== root) {
-    if (classes(el).has(className)) return el;
-    el = el.parentNode;
+/**
+ * Add leaf with text and config
+ * @param {String} text
+ * @param {Object} config
+ * @api public
+ */
+Tree.prototype.leaf = function(text, o) {
+  o = o || {};
+  var parent = this.find(o.parent) || this.last || this.root;
+  var node = this.leafNode.cloneNode(true);
+  for (var i in o) {
+    node.setAttribute('data-' + i, o[i]);
   }
-  return null;
+  node.innerHTML = text;
+  var ul = query('.tree-list', parent);
+  ul.appendChild(node);
+  return this;
 }
+
+/**
+ * Add branch with text and config
+ * @param {String} text
+ * @param {Object} config
+ * @api public
+ */
+Tree.prototype.branch = function(text, o) {
+  o = o || {};
+  var parent = this.find(o.parent) || this.last || this.root;
+  var node = this.branchNode.cloneNode(true);
+  for (var i in o) {
+    node.setAttribute('data-' + i, o[i]);
+  }
+  query('.tree-text', node).innerHTML = text;
+  var ul = query('.tree-list', parent);
+  ul.appendChild(node);
+  this.last = node;
+  return this;
+}
+
 
 Tree.prototype.parents = function (el) {
   if (typeof el === 'string') {
     el = this.find(el);
   }
   var res = [];
-  while (el !== this.el) {
+  while (el !== this.root) {
     el = el.parentNode;
     if (classes(el).has('tree-branch')) res.unshift(el);
   }
@@ -47,22 +86,21 @@ Tree.prototype.parents = function (el) {
  */
 Tree.prototype.onclick = function(e) {
   var el = e.target;
-  //leaf click
   var node = within(el, 'tree-leaf', this.el);
   if (node) {
-    var active = this.el.querySelector('.tree-leaf.active');
+    //active leaf
+    var active = query('.active', this.el);
     if (active) {
       classes(active).remove('active');
     }
     var id = node.getAttribute('data-id');
     classes(node).add('active');
-    this.emit('active', node, id);
-    return;
-  }
-  node = within(el, 'tree-branch', this.el);
-  //node click
-  if (node) {
-    classes(node).toggle('tree-collapse');
+    this.emit('active', node);
+  } else {
+    node = within(el, 'tree-text', this.el);
+    if (node) {
+      classes(node.parentNode).toggle('tree-collapse');
+    }
   }
 }
 
@@ -73,46 +111,6 @@ Tree.prototype.collapse = function(el) {
   classes(el).add('tree-collapse');
   return this;
 }
-/**
- * Add branch with text and config
- * @param {String} text
- * @param {Object} config
- * @api public
- */
-Tree.prototype.branch = function(text, o) {
-  o = o || {};
-  var parent = o.parent || this.last;
-  var html = this.compile({
-    text: text,
-    id: o.id || ''
-  })
-  var node = domify(html);
-  var ul = parent.querySelector('.tree-list');
-  if (!ul || ul.parentNode !== parent) {
-    parent.appendChild(node);
-  } else {
-    var li = document.createElement('li');
-    ul.appendChild(li);
-    li.appendChild(node);
-  }
-  this.last = node;
-  return this;
-}
-
-/**
- * Add leaf with text and config
- * @param {String} text
- * @param {Object} config
- * @api public
- */
-Tree.prototype.leaf = function(text, o) {
-  o = o || {};
-  var parent = o.parent || this.last;
-  var html = '<li class="tree-leaf" data-id="' + (o.id||'') + '">' + text + '</li>';
-  var node = domify(html);
-  parent.querySelector('ul').appendChild(node);
-  return this;
-}
 
 /**
  * Get the node by identifier
@@ -120,21 +118,20 @@ Tree.prototype.leaf = function(text, o) {
  * @api public
  */
 Tree.prototype.find = function(id) {
-  return this.el.querySelector('[data-id="' + id + '"]');
+  return query('[data-id="' + id + '"]', this.el);
 }
 
 /**
- * Expend the element branch expand recursivly
+ * Expend the element branch recursive
  * @param {String} el
  * @api public
  */
 Tree.prototype.show = function(el) {
   if (typeof el === 'string') el = this.find(el);
-  el = el.parentNode;
-  var node = within(el, 'tree-branch', this.el);
-  if (node) {
-    classes(node).remove('tree-collapse');
-    this.show(node);
+  var parent = el.parentNode;
+  if (parent !== this.root) {
+    classes(parent).remove('tree-collapse');
+    this.show(parent);
   }
   return this;
 }
@@ -147,14 +144,14 @@ Tree.prototype.show = function(el) {
 Tree.prototype.remove = function(el) {
   if (arguments.length === 0) {
     this.events.unbind();
-    this.el.innerHTML = '';
-    if (this.movearound) this.movearound.remove();
+    clear(this.el);
+    this.movearound && this.movearound.remove();
     return;
   }
   if (typeof el === 'string') el = this.find(el);
   el.parentNode.removeChild(el);
   var id = el.getAttribute('data-id');
-  this.emit('remove', el, id);
+  this.emit('remove', el);
   return this;
 }
 
@@ -170,5 +167,18 @@ Tree.prototype.draggable = function() {
   }.bind(this));
   return this;
 }
-
 module.exports = Tree;
+
+function clear(node) {
+  while (node.firstChild) {
+    node.removeChild(node.firstChild);
+  }
+}
+function within(el, className, root) {
+  while(el && el !== root) {
+    if (classes(el).has(className)) return el;
+    el = el.parentNode;
+  }
+  return null;
+}
+
