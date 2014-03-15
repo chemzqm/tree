@@ -36,10 +36,13 @@ Emitter(Tree.prototype);
  */
 Tree.prototype.leaf = function(text, o) {
   o = o || {};
-  var parent = this.find(o.parent) || this.last || this.root;
+  var parent = o.parent || this.last || this.root;
+  if (typeof parent === 'string') {
+    parent = this.find(parent);
+  }
   var node = this.leafNode.cloneNode(true);
   for (var i in o) {
-    node.setAttribute('data-' + i, o[i]);
+    i === 'parent' || node.setAttribute('data-' + i, o[i]);
   }
   node.innerHTML = text;
   var ul = query('.tree-list', parent);
@@ -55,10 +58,13 @@ Tree.prototype.leaf = function(text, o) {
  */
 Tree.prototype.branch = function(text, o) {
   o = o || {};
-  var parent = this.find(o.parent) || this.last || this.root;
+  var parent = o.parent || this.last || this.root;
+  if (typeof parent === 'string') {
+    parent = this.find(parent);
+  }
   var node = this.branchNode.cloneNode(true);
   for (var i in o) {
-    node.setAttribute('data-' + i, o[i]);
+    i === 'parent' || node.setAttribute('data-' + i, o[i]);
   }
   query('.tree-text', node).innerHTML = text;
   var ul = query('.tree-list', parent);
@@ -167,7 +173,85 @@ Tree.prototype.draggable = function() {
   }.bind(this));
   return this;
 }
+
+/**
+ * build the tree with obj, optional configured with `text` and `children` attribute.
+ *
+ * @param {String} obj data source
+ * @param {String} config [optional] config object
+ * @api public
+ */
+Tree.prototype.data = function(obj, config) {
+  config = config || {};
+  var textAttr = config.text || 'text';
+  var childrenAttr = config.children || 'children';
+  obj.forEach(function (o) {
+    var o = clone(o);
+    o.parent = o.parent || this.root;
+    var text = o[textAttr];
+    var children = o[childrenAttr];
+    delete o[textAttr];
+    delete o[childrenAttr];
+    if (children) {
+      this.branch(text, o);
+      children.forEach(function (child) {
+        child.parent = this.last;
+      }.bind(this))
+      this.data(children, config);
+    } else {
+      this.leaf(text, o);
+    }
+  }.bind(this))
+}
+
+/**
+ * return the json string format of the tree
+ * @api public
+ */
+Tree.prototype.toJSON = function() {
+  var res = [];
+  var list = query('.tree-list', this.root).childNodes;
+  if (list) {
+    for (var i = 0; i < list.length; i++) {
+      res.push(toObject(list[i]));
+    }
+  }
+  return JSON.stringify(res);
+}
+
 module.exports = Tree;
+
+function toObject(node) {
+  var res = {};
+  var attrs = node.attributes;
+  for (var i = 0; i < attrs.length; i++) {
+    var name = attrs[i].nodeName;
+    if (/^data-/.test(name)) {
+      res[name.replace(/^data-/, '')] = node.getAttribute(name);
+    }
+  }
+  if (classes(node).has('tree-leaf')) {
+    res.text = node.innerHTML;
+  }
+  else if (classes(node).has('tree-branch')){
+    res.text = query('.tree-text', node).innerHTML;
+    res.children = [];
+    var list = query('.tree-list', node).childNodes;
+    for (var i = 0; i < list.length; i++) {
+      var node = list[i];
+      node.nodeType === 1 && res.children.push(toObject(node));
+    }
+  }
+  return res;
+}
+
+function clone(o) {
+  var res = {};
+  for (var i in o) {
+    res[i] = o[i];
+  }
+  return res;
+}
 
 function clear(node) {
   while (node.firstChild) {

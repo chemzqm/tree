@@ -55,18 +55,35 @@
       var dom = require('dom');
       var parent = document.getElementById('tree');
       var tree = new Tree(parent);
-      tree.leaf('1', { id: 1 });
-      tree.branch('title', {id: 'first'});
-      tree.leaf('2', { id: 2 });
-      tree.leaf('3', { id: 3 });
-      tree.branch('other title', {parent: parent, id: 'other'});
-      tree.leaf('4');
-      tree.leaf('5');
-      tree.leaf('6');
-      tree.branch('sub title', {parent: tree.find('first'), id: 'sub'});
-      tree.leaf('7', {id: 7});
-      tree.leaf('8');
-      tree.leaf('9');
+      tree.data([{
+          text: 'o'
+        }, {
+          text: 'first title',
+          id: 'first',
+          children:[
+            {text: '2'},
+            {text: '3'},
+            {
+              text: 'other title',
+              id: 'other',
+              children: [
+                {text: '4'},
+                {text: '5'},
+                {
+                  text: 'sub title',
+                  id: 'sub',
+                  children: [
+                    {text: '6'},
+                    {text: '7', id: 7},
+                    {text: '8'}
+                  ]
+                }
+              ]
+            }
+          ]
+        }, {
+          text: 'end'
+        }])
       tree.on('active', function(node) {
         console.log(node);
       })
@@ -92,6 +109,8 @@
       $('destroy').addEventListener('click', function(){
         tree.remove();
       })
+      var str = tree.toJSON();
+      console.log(str);
     </script>
   </body>
 </html>
