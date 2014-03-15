@@ -2,14 +2,14 @@
   "name": "tree",
   "repo": "chemzqm/tree",
   "description": "lightweight tree component",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "keywords": [],
   "dependencies": {
     "component/events": "*",
     "component/classes": "*",
+    "component/query": "*",
     "component/domify": "*",
     "component/emitter": "*",
-    "visionmedia/minstache": "*",
     "chemzqm/movearound": "*"
   },
   "development": {

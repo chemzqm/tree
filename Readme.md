@@ -13,14 +13,22 @@
 ## Events
 
 * `update` emitted after D&D event.
-* `active` emitted with `node` and `id` when a leaf node is clicked, class `active` is added to that node.
-* `remove` emitted with `node` and `id` when a node is removed from the tree.
+* `active` emitted with `node` when a leaf node is clicked, class `active` is added to that node.
+* `remove` emitted with `node` when a node is removed from the tree.
 
 ## API
 
 ### Tree(parent)
 
 Init tree with parent node.
+
+### .data(object)
+
+Config the tree with object.
+
+### .toJSON()
+
+Get the json format.
 
 ### .branch(text, [config])
 
