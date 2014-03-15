@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>tabs</title>
+    <title>tree</title>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="build/build.css">
     <style>
@@ -42,37 +42,53 @@
     <button id="destroy">
       destroy
     </button>
+    <button id="json">
+      toJSON
+    </button>
     <div id="tree">
     </div>
+
+
     <script src="build/build.js"></script>
     <script>
+      function $(id) {
+        return document.getElementById(id);
+      }
       var Tree = require('tree');
       var dom = require('dom');
       var parent = document.getElementById('tree');
       var tree = new Tree(parent);
-      tree.branch('title', {parent: parent, id: 'first'});
-      tree.leaf('1', {
-        id: 1
-      });
-      tree.leaf('2', {
-        id: 2
-      });
-      tree.leaf('3', {
-        id: 3
-      });
-      tree.branch('other title', {parent: parent, id: 'other'});
-      tree.leaf('4');
-      tree.leaf('5');
-      tree.leaf('6');
-      tree.branch('sub title', {parent: tree.find('first'), id: 'sub'});
-      tree.leaf('7', {
-        id: 7
-      });
-      tree.leaf('8');
-      tree.leaf('9');
-      tree.on('active', function(node, id) {
+      tree.data([{
+          text: 'o'
+        }, {
+          text: 'first title',
+          id: 'first',
+          children:[
+            {text: '2'},
+            {text: '3'},
+            {
+              text: 'other title',
+              id: 'other',
+              children: [
+                {text: '4'},
+                {text: '5'},
+                {
+                  text: 'sub title',
+                  id: 'sub',
+                  children: [
+                    {text: '6'},
+                    {text: '7', id: 7},
+                    {text: '8'}
+                  ]
+                }
+              ]
+            }
+          ]
+        }, {
+          text: 'end'
+        }])
+      tree.on('active', function(node) {
         console.log(node);
-        console.log(id);
       })
       tree.on('update', function(){
         console.log('update');
@@ -80,21 +96,25 @@
       tree.draggable();
       tree.collapse('first');
       tree.collapse('sub');
-      document.getElementById('show').addEventListener('click', function() {
+      $('show').addEventListener('click', function() {
         tree.show('7');
       });
-      document.getElementById('remove').addEventListener('click', function(){
+      $('remove').addEventListener('click', function(){
         tree.remove('other');
       })
-      document.getElementById('parents').addEventListener('click', function(){
+      $('parents').addEventListener('click', function(){
         var nodes = tree.parents('7');
         var ids = dom(nodes).map(function(n){
           return this.attr('data-id');
         });
         console.log(ids);
       })
-      document.getElementById('destroy').addEventListener('click', function(){
+      $('destroy').addEventListener('click', function(){
         tree.remove();
+      })
+      $('json').addEventListener('click', function(){
+        var str = tree.toJSON();
+        console.log(str);
       })
     </script>
   </body>
