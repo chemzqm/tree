@@ -10,6 +10,36 @@
 
     $ component install chemzqm/tree
 
+## Example
+
+``` js
+var Tree = require('tree');
+var parent =document.getElementById('tree');
+var tree = new Tree(parent);
+tree.data([{
+    text: 'o'
+  }, {
+    text: 'first title',
+    id: 'first',
+    children:[
+      {text: '2'},
+      {text: '3'}
+    ]
+  }, {
+    text: 'end'
+  }]);
+
+tree.draggable();
+
+tree.on('active', function(node) {
+  console.log(node);
+})
+tree.on('update', function(){
+  var str = tree.toJSON();
+  console.log(str);
+})
+```
+
 ## Events
 
 * `update` emitted after D&D event.
