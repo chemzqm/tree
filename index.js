@@ -186,7 +186,7 @@ Tree.prototype.data = function(obj, config) {
   var textAttr = config.text || 'text';
   var childrenAttr = config.children || 'children';
   obj.forEach(function (o) {
-    var o = clone(o);
+    o = clone(o);
     o.parent = o.parent || this.root;
     var text = o[textAttr];
     var children = o[childrenAttr];
@@ -223,9 +223,9 @@ Tree.prototype.toJSON = function() {
 module.exports = Tree;
 
 function toObject(node) {
-  var res = {};
+  var res = {}, i;
   var attrs = node.attributes;
-  for (var i = 0; i < attrs.length; i++) {
+  for ( i = 0; i < attrs.length; i++) {
     var name = attrs[i].nodeName;
     if (/^data-/.test(name)) {
       res[name.replace(/^data-/, '')] = node.getAttribute(name);
@@ -238,8 +238,8 @@ function toObject(node) {
     res.text = query('.tree-text', node).innerHTML;
     res.children = [];
     var list = query('.tree-list', node).childNodes;
-    for (var i = 0; i < list.length; i++) {
-      var node = list[i];
+    for ( i = 0; i < list.length; i++) {
+      node = list[i];
       node.nodeType === 1 && res.children.push(toObject(node));
     }
   }
