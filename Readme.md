@@ -52,9 +52,9 @@ tree.on('update', function(){
 
 Init tree with parent node.
 
-### .data(object)
+### .data(object, [config])
 
-Config the tree with object.
+Build the tree with object. Optional config your `text` and `children` attributes.
 
 ### .draggable()
 
