@@ -3,7 +3,7 @@ var events = require('events');
 var classes = require('classes');
 var movearound = require('movearound');
 var Emitter = require('emitter');
-var tmpl = require('./template');
+var tmpl = require('./template.html');
 var query = require('query');
 
 
