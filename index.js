@@ -232,10 +232,10 @@ function toObject(node) {
     }
   }
   if (classes(node).has('tree-leaf')) {
-    res.text = node.innerHTML;
+    res.text = node.textContent;
   }
   else if (classes(node).has('tree-branch')){
-    res.text = query('.tree-text', node).innerHTML;
+    res.text = query('.tree-text', node).textContent;
     res.children = [];
     var list = query('.tree-list', node).childNodes;
     for ( i = 0; i < list.length; i++) {

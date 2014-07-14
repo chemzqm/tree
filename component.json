@@ -9,11 +9,11 @@
   ],
   "demo": "http://chemzqm.github.io/tree/",
   "dependencies": {
-    "component/events": "*",
     "component/classes": "*",
     "component/query": "*",
     "component/domify": "*",
     "component/emitter": "*",
+    "chemzqm/events": "*",
     "chemzqm/movearound": "*"
   },
   "development": {
