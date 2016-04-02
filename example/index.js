@@ -1,3 +1,4 @@
+require('../tree.css')
 function $(id) {
   return document.getElementById(id);
 }
