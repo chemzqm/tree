@@ -1,1 +1,0 @@
-module.exports = '<div class="tree">\n  <ul class="tree-list">\n    <li class="tree-leaf"></li>\n    <li class="tree-branch">\n      <div class="tree-text"></div>\n      <ul class="tree-list">\n      </ul>\n    </li>\n  </ul>\n</div>\n';

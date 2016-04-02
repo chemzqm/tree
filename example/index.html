@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>tree</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../tree.css">
+    <style>
+      *, *:before, *:after {
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+      }
+      #tree {
+        width: 300px;
+        padding: 15px;
+        background-color: #F7F5FA;
+        border-radius: 5px;
+        color: #716B7A;
+        font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+      }
+      .tree-leaf:hover{
+        background-color: #E5E3E9;
+      }
+      .tree-leaf.active {
+        font-weight: bold;
+        color: #563D7C;
+      }
+      #tree 
+    </style>
+  </head>
+  <body>
+
+    <button id="show">
+      show 7
+    </button>
+    <button id="remove">
+      remove other
+    </button>
+    <button id="parents">
+      parents of 7
+    </button>
+    <button id="destroy">
+      destroy
+    </button>
+    <button id="json">
+      toJSON
+    </button>
+    <div id="tree">
+    </div>
+
+
+    <script src="./bundle.js"></script>
+    <script>
+    </script>
+  </body>
+</html>
