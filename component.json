@@ -1,7 +1,7 @@
 {
   "name": "tree",
   "description": "lightweight tree component",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "keywords": [
     "tree",
     "drag",
@@ -13,7 +13,7 @@
     "component/query": "*",
     "component/domify": "*",
     "component/emitter": "*",
-    "chemzqm/events": "*",
+    "component/events": "*",
     "chemzqm/movearound": "*"
   },
   "development": {
