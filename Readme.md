@@ -10,6 +10,10 @@
 
     $ component install chemzqm/tree
 
+  Install with [npm](https://npmjs.com)
+
+    $ npm install tree-ui
+
 ## Example
 
 ``` js
